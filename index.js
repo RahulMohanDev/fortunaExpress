@@ -6,6 +6,8 @@ const app = express()
 // all my work will be done here
 app.use(express.json())
 
+console.log(process.env.PET_NAME);
+
 const todos = [
   {
     id: 1,
@@ -70,6 +72,6 @@ app.delete('/api/v1/todos/:id', (req, res) => {
 
 
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000')
+app.listen(process.env.PORT_NO || 6000, () => {
+  console.log(`Server is running on port ${process.env.PORT_NO || 6000}`)
 })
