@@ -1,6 +1,7 @@
 import express from 'express'
-import todoRouter from './routes/todo/todo.js'
+import todoRouter from './routes/todo/todoController.js'
 import cors from 'cors'
+// import Potato from 'potato';
 
 // start the server
 const app = express()
@@ -8,9 +9,11 @@ const app = express()
 // public files
 app.use(express.static('public'))
 
-
 // all my work will be done here
 app.use(express.json())
+
+// middleware
+app.use(express.urlencoded({ extended: true }))
 
 // app.use(cors())
 
@@ -31,5 +34,5 @@ app.use(express.json())
 app.use('/api/v1/todos', todoRouter)
 
 app.listen(process.env.PORT_NO || 5000, () => {
-  console.log(`Server is running on port ${process.env.PORT_NO || 6000}`)
+  console.log(`Server is running on port ${process.env.PORT_NO || 5000}`)
 })

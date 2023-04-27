@@ -2,29 +2,15 @@ import express from 'express'
 
 const router = express.Router();
 
-const todos = [
-  {
-    id: 1,
-    title: 'Learn Node.js',
-    description: 'Learn Node.js and Express.js',
-  }, 
-  {
-    id: 2,
-    title: 'Learn React.js',
-    description: 'Learn React.js and Redux',
-  },
-  {
-    id: 3,
-    title: 'Learn Vue.js',
-    description: 'Learn Vue.js and Vuex',
-  },
-]
 
+// '/api/v1/todos'
 router.get('', (req, res) => {
   const todoTitles = todos.map((todo) => ({ title: todo.title, id: todo.id }))
   res.json({ todos: todoTitles })
 })
 
+
+// '/api/v1/todos/1'
 router.get('/:id', (req, res) => {
   const { id } = req.params
   if (Number.isNaN(Number(id))) return res.status(400).send('Bad Request - ID must be a number')
@@ -33,6 +19,7 @@ router.get('/:id', (req, res) => {
   res.json({ todo: todo })
 })
 
+// /api/v1/todos
 router.post('', (req, res) => {
   const { title, description } = req.body
   if (!title || !description) return res.status(400).send('Bad Request')
