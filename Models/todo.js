@@ -10,10 +10,12 @@ class Todo {
   }
 
   static find(id) {
-    if (Number.isNaN(Number(id))) return null
+    if (Number.isNaN(Number(id))) throw new Error('id must be a number')
     const todo = todos.find((todo) => todo.id === Number(id))
     if (todo != undefined) {
       return todo
+    } else {
+      return null
     }
   }
 
@@ -29,23 +31,24 @@ class Todo {
   }
 
   static delete(id) {
-    if (Number.isNaN(Number(id))) return null
-    const todo = todos.find((todo) => todo.id === Number(id))
-    if (todo != undefined) {
-      const index = todos.indexOf(todo)
-      todos.splice(index, 1)
-      return todo
-    }
+    const todo = Todo.find(id)
+    if (todo) todo.delete()
+    else throw new Error('todo not found')
   }
 
   //update will be static but you can use save to update also
   static update(id, title, description) {
-    if (Number.isNaN(Number(id))) return null
-    const todo = todos.find((todo) => todo.id === Number(id))
-    if (todo != undefined) {
+    const todo = Todo.find(id)
+    if (todo) {
       if (title) todo.title = title
       if (description) todo.description = description
       return todo
-    }
+    } else throw new Error('todo not found')
+  }
+
+  static all() {
+    return todos
   }
 }
+
+export default Todo

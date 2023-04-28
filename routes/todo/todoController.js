@@ -1,54 +1,56 @@
 import express from 'express'
-
-const router = express.Router();
-
+import Todo from '../../Models/Todo.js'
+const router = express.Router()
 
 // '/api/v1/todos'
 router.get('', (req, res) => {
-  const todoTitles = todos.map((todo) => ({ title: todo.title, id: todo.id }))
+  console.log(Todo.all())
+  const todoTitles = Todo.all().map((todo) => ({
+    title: todo.title,
+    id: todo.id,
+  }))
   res.json({ todos: todoTitles })
 })
-
 
 // '/api/v1/todos/1'
 router.get('/:id', (req, res) => {
   const { id } = req.params
-  if (Number.isNaN(Number(id))) return res.status(400).send('Bad Request - ID must be a number')
-  const todo = todos.find((todo) => todo.id === Number(id))
-  if (!todo) return res.status(404).send('Todo not found')
-  res.json({ todo: todo })
+  try {
+    const todo = Todo.find(id)
+    if (!todo) return res.status(404).send('Todo not found')
+    res.json({ todo: todo })
+  } catch (error) {
+    return res.status(400).send('Bad Request - ID must be a number')
+  }
 })
 
 // /api/v1/todos
 router.post('', (req, res) => {
   const { title, description } = req.body
   if (!title || !description) return res.status(400).send('Bad Request')
-  let todo = { id: todos.length + 1, title, description }
-  todos.push(todo)
-  res.status(201).json({ todos: todos })
+  const todo = new Todo(title, description)
+  todo.save()
+  res.status(201).json({ todos: Todo.all() })
 })
 
-
 router.put('/:id', (req, res) => {
-  const { id } = req.params;
-  if (Number.isNaN(Number(id))) return res.status(400).send('Bad Request - ID must be a number');
-  const todo = todos.find((todo) => todo.id === Number(id));  
-  if (!todo) return res.status(404).send('Todo not found');
-  const { title, description } = req.body;
-  if (!title && !description) return res.status(400).send('Bad Request');
-  if(title) todo.title = title;
-  if(description) todo.description = description;
-  res.status(200).json({ todos: todos });
+  const { id } = req.params
+  try {
+    Todo.update(id, req.body.title, req.body.description)
+  } catch (error) {
+    return res.status(400).send(error.message)
+  }
+  res.status(200).json({ todos: Todo.all() })
 })
 
 router.delete('/:id', (req, res) => {
-  const { id } = req.params;
-  if (Number.isNaN(Number(id))) return res.status(400).send('Bad Request - ID must be a number');
-  const todo = todos.find((todo) => todo.id === Number(id));
-  if (!todo) return res.status(404).send('Todo not found');
-  const index = todos.indexOf(todo);
-  todos.splice(index, 1);
-  res.status(200).json({ todos: todos });
+  const { id } = req.params
+  try {
+    Todo.delete(id)
+  } catch (error) {
+    return res.status(400).send(error.message)
+  }
+  res.status(200).json({ todos: Todo.all() })
 })
 
-export default router;
+export default router
