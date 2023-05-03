@@ -2,7 +2,11 @@ import express from 'express'
 import todoRouter from './routes/todo/todoController.js'
 import cors from 'cors'
 import Todo from './Models/Todo.js'
-// import Potato from 'potato';
+import mongoose  from 'mongoose'
+
+
+
+// import Potato from 'potato'
 
 // start the server
 const app = express()
@@ -16,14 +20,18 @@ app.use(express.json())
 // middleware
 app.use(express.urlencoded({ extended: true }))
 
+
+mongoose.connect('mongodb://127.0.0.1:27017/fortunaTodo');
+// db
+const db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log("we're connected to the db!")
+});
+
 // init
 
-const todo1 = new Todo('learn js', 'learn js today')
-todo1.save()
-const todo2 = new Todo('lear react', 'learn react today')
-todo2.save()
-const todo3 = new Todo('learn express', 'learn express today')
-todo3.save()
 // app.use(cors())
 
 // writing a custom middleware
